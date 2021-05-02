@@ -6,6 +6,8 @@ import org.playuniverse.brickforce.maprepository.model.Preview;
 import org.playuniverse.brickforce.maprepository.storage.FileStorage;
 
 public class RedisFileStorage extends FileStorage {
+	
+	// TODO: Implement Redis Storage
 
 	@Override
 	public void store(BrickMap map) {

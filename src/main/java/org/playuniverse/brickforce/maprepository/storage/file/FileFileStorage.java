@@ -29,6 +29,8 @@ public class FileFileStorage extends FileStorage {
 	public File getDirectory() {
 		return directory;
 	}
+	
+	// TODO: Implement File Storage
 
 	@Override
 	public void store(BrickMap map) {

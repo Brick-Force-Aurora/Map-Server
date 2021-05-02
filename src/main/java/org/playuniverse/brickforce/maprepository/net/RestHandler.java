@@ -17,7 +17,7 @@ public class RestHandler implements RequestHandler {
 	public boolean handleRequest(HttpSender sender, HttpWriter writer, ReceivedRequest request) throws Exception {
 		
 		
-		
+		// TODO: Add RestApi
 		
 		return false;
 	}

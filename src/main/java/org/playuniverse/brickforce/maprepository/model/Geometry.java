@@ -1,27 +1,24 @@
 package org.playuniverse.brickforce.maprepository.model;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.ArrayList;
 
-import com.syntaxphoenix.syntaxapi.utils.java.Streams;
+import org.playuniverse.brickforce.maprepository.shaded.redis.model.RCompound;
 
 public final class Geometry {
 
-	public Geometry(File file) throws FileNotFoundException, IOException {
-		this(new FileInputStream(file));
+	private final int map;
+	private final int skybox;
+	
+	private final ArrayList<Brick> bricks;
+	
+	public Geometry(int map, int skybox, ArrayList<Brick> bricks) {
+		this.map = map;
+		this.skybox = skybox;
+		this.bricks = bricks;
 	}
 
-	public Geometry(InputStream stream) throws IOException {
-		this(Streams.toByteArray(stream));
+	public RCompound asCompound() {
+		return null;
 	}
-
-	public Geometry(byte[] data) {
-		
-	}
-
-
 
 }

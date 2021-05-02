@@ -1,5 +1,8 @@
 package org.playuniverse.brickforce.maprepository.model;
 
+import org.playuniverse.brickforce.maprepository.shaded.redis.model.RCompound;
+import org.playuniverse.brickforce.maprepository.shaded.redis.model.RLong;
+
 public final class BrickMap {
 	
 	private final long id;
@@ -23,6 +26,14 @@ public final class BrickMap {
 	
 	public Preview getPreview() {
 		return preview;
+	}
+	
+	public RCompound asCompound() {
+		RCompound compound = new RCompound();
+		compound.set("id", new RLong(id));
+		compound.set("preview", preview.asCompound());
+		compound.set("geometry", geometry.asCompound());
+		return compound;
 	}
 
 }

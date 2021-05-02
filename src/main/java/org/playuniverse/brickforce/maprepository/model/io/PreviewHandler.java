@@ -34,7 +34,7 @@ public class PreviewHandler implements Serializer<Preview>, Deserializer<Preview
 		String alias = Buffer.readString(buffer);
 		int bricks = buffer.readInt();
 
-		int year = buffer.readByte();
+		int year = buffer.readShort();
 		int month = buffer.readByte();
 		int day = buffer.readByte();
 		int hour = buffer.readByte();
@@ -70,7 +70,7 @@ public class PreviewHandler implements Serializer<Preview>, Deserializer<Preview
 		Buffer.writeString(buf, preview.getAlias());
 		buf.writeInt(preview.getBricks());
 		LocalDateTime date = preview.getDate();
-		buf.writeByte(date.getYear());
+		buf.writeShort(date.getYear());
 		buf.writeByte(date.getMonthValue());
 		buf.writeByte(date.getDayOfMonth());
 		buf.writeByte(date.getHour());
