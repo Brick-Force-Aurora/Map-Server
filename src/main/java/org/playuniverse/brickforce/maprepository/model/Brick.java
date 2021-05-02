@@ -1,7 +1,5 @@
 package org.playuniverse.brickforce.maprepository.model;
 
-import org.playuniverse.brickforce.maprepository.model.script.Script;
-
 public final class Brick {
 
 	private final int id;

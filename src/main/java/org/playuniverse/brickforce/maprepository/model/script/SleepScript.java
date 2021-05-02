@@ -1,6 +1,6 @@
 package org.playuniverse.brickforce.maprepository.model.script;
 
-public class SleepScript extends Script {
+public class SleepScript extends ScriptCommand {
 
 	@Override
 	public final ScriptType getType() {

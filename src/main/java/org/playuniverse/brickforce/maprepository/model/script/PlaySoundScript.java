@@ -1,6 +1,6 @@
 package org.playuniverse.brickforce.maprepository.model.script;
 
-public class PlaySoundScript extends Script {
+public class PlaySoundScript extends ScriptCommand {
 
 	@Override
 	public final ScriptType getType() {

@@ -1,6 +1,6 @@
 package org.playuniverse.brickforce.maprepository.model.script;
 
-public class SetMissionScript extends Script {
+public class SetMissionScript extends ScriptCommand {
 
 	@Override
 	public final ScriptType getType() {

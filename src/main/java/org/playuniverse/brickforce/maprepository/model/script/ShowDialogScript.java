@@ -1,6 +1,6 @@
 package org.playuniverse.brickforce.maprepository.model.script;
 
-public class ShowDialogScript extends Script {
+public class ShowDialogScript extends ScriptCommand {
 
 	@Override
 	public final ScriptType getType() {
