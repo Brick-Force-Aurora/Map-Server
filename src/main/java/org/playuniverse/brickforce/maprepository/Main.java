@@ -43,7 +43,7 @@ public final class Main {
 
 		container.replace(new RestServer(arguments, console, storage, port, address));
 		// START : Setup Commands
-		console.getCommandManager().register(null, STORAGE_PATH, args);
+		console.getCommandManager().register(new ShutdownCommand(), "exit", "stop", "shutdown");
 		// END : Setup Commands
 		container.get().start();
 	}
