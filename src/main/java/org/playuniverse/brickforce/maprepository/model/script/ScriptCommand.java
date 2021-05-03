@@ -7,6 +7,15 @@ import org.playuniverse.brickforce.maprepository.shaded.redis.model.RType;
 
 public abstract class ScriptCommand<E extends RModel> {
 
+	public static final String[] CMD_DELIMITERS = new String[] {
+			")(*&",
+			"\0"
+	};
+	public static final String[] ARG_DELIMITERS = new String[] {
+			"!Q#$",
+			"\0"
+	};
+
 	public static ScriptCommand<?> fromCompound(RCompound compound) {
 		ScriptType type = ScriptType.values()[(byte) compound.get("type").getValue()];
 		ScriptCommand<?> command = getScriptCommandByType(type);
@@ -15,6 +24,11 @@ public abstract class ScriptCommand<E extends RModel> {
 		}
 		command.loadDataFromModel0(compound.get("data"));
 		return command;
+	}
+
+	public static ScriptCommand<?> fromArguments(ScriptType type, String[] arguments) {
+		ScriptCommand<?> command = getScriptCommandByType(type);
+		return (command == null || !command.loadDataFromArguments(arguments)) ? null : command;
 	}
 
 	public static ScriptCommand<?> getScriptCommandByType(ScriptType type) {
@@ -63,6 +77,14 @@ public abstract class ScriptCommand<E extends RModel> {
 		return compound;
 	}
 
+	public final String asDescription() {
+		String[] data = dataAsArguments();
+		if (data == null) {
+			return type.typeName();
+		}
+		return type.typeName() + ARG_DELIMITERS[0] + String.join(ARG_DELIMITERS[0], data);
+	}
+
 	@SuppressWarnings("unchecked")
 	private final void loadDataFromModel0(RModel model) {
 		if (model == null || model.getType() != dataModelType) {
@@ -70,6 +92,10 @@ public abstract class ScriptCommand<E extends RModel> {
 		}
 		loadDataFromModel((E) model);
 	}
+
+	protected abstract boolean loadDataFromArguments(String[] arguments);
+
+	protected abstract String[] dataAsArguments();
 
 	protected abstract void loadDataFromModel(E model);
 

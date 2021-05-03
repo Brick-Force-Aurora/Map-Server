@@ -14,6 +14,19 @@ public class GiveWeaponScript extends ScriptCommand<RString> {
 	public String getCode() {
 		return code;
 	}
+	
+	@Override
+	protected boolean loadDataFromArguments(String[] arguments) {
+		this.code = arguments.length < 1 ? "" : arguments[0];
+		return true;
+	}
+	
+	@Override
+	protected String[] dataAsArguments() {
+		return new String[] {
+				code
+		};
+	}
 
 	@Override
 	protected void loadDataFromModel(RString model) {

@@ -45,6 +45,30 @@ public class SetMissionScript extends ScriptCommand<RCompound> {
 	public boolean hasTag() {
 		return !tag.isEmpty();
 	}
+	
+	@Override
+	protected boolean loadDataFromArguments(String[] arguments) {
+		if(arguments.length < 3) {
+			return true;
+		}
+		this.progress = arguments[0];
+		this.title = arguments[1];
+		this.subTitle = arguments[2];
+		if(arguments.length >= 4) {
+			this.tag = arguments[3];
+		}
+		return true;
+	}
+	
+	@Override
+	protected String[] dataAsArguments() {
+		return new String[] {
+				progress,
+				title,
+				subTitle,
+				tag
+		};
+	}
 
 	@Override
 	protected void loadDataFromModel(RCompound model) {
