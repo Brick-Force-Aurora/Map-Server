@@ -1,5 +1,7 @@
 package org.playuniverse.brickforce.maprepository.model;
 
+import org.playuniverse.brickforce.maprepository.shaded.redis.model.RCompound;
+
 public final class Brick {
 
 	private final int id;
@@ -15,6 +17,14 @@ public final class Brick {
 		this.template = template;
 		this.transform = transform;
 		this.script = script;
+	}
+
+	public Brick(RCompound compound) {
+		this.id = (int) compound.get("id").getValue();
+		this.code = (int) compound.get("code").getValue();
+		this.template = (short) compound.get("template").getValue();
+		this.transform = new Transform((RCompound) compound.get("transform"));
+		this.script = compound.has("script") ? new Script((RCompound) compound.get("script")) : null;
 	}
 
 	public int getId() {
@@ -39,6 +49,10 @@ public final class Brick {
 
 	public Script getScript() {
 		return script;
+	}
+	
+	public RCompound asCompound() {
+		return null;
 	}
 
 }

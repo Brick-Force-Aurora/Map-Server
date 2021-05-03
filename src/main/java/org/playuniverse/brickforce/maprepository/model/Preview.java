@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.time.LocalDateTime;
 
 import org.playuniverse.brickforce.maprepository.model.util.ModelConversion;
+import org.playuniverse.brickforce.maprepository.model.util.ModelHandler;
 import org.playuniverse.brickforce.maprepository.shaded.redis.model.RByteArray;
 import org.playuniverse.brickforce.maprepository.shaded.redis.model.RCompound;
 import org.playuniverse.brickforce.maprepository.shaded.redis.model.RInt;
@@ -22,8 +23,8 @@ public final class Preview {
 		this.slot = (short) compound.get("slot").getValue();
 		this.alias = (String) compound.get("alias").getValue();
 		this.bricks = (int) compound.get("bricks").getValue();
-		this.date = ModelConversion.fromCompound((RCompound) compound.get("date"));
-		this.image = ModelConversion.fromByteArray(((RByteArray) compound.get("image")).getValue());
+		this.date = ModelConversion.toDate((RCompound) compound.get("date"));
+		this.image = ModelHandler.toImage(((RByteArray) compound.get("image")).getValue());
 	}
 
 	public Preview(short slot, String alias, int bricks, LocalDateTime date, BufferedImage image) {
@@ -59,8 +60,8 @@ public final class Preview {
 		compound.set("slot", new RShort(slot));
 		compound.set("alias", new RString(alias));
 		compound.set("bricks", new RInt(bricks));
-		compound.set("date", ModelConversion.asCompound(date));
-		compound.set("image", new RByteArray(ModelConversion.toByteArray(image)));
+		compound.set("date", ModelConversion.fromDate(date));
+		compound.set("image", new RByteArray(ModelHandler.fromImage(image)));
 		return compound;
 	}
 

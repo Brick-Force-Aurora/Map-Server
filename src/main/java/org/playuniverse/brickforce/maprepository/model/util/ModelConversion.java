@@ -5,20 +5,23 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
+import org.playuniverse.brickforce.maprepository.model.Brick;
+import org.playuniverse.brickforce.maprepository.model.script.ScriptCommand;
 import org.playuniverse.brickforce.maprepository.shaded.redis.model.RByte;
 import org.playuniverse.brickforce.maprepository.shaded.redis.model.RCompound;
+import org.playuniverse.brickforce.maprepository.shaded.redis.model.RList;
 import org.playuniverse.brickforce.maprepository.shaded.redis.model.RShort;
+import org.playuniverse.brickforce.maprepository.shaded.redis.model.RType;
 
 public final class ModelConversion {
 
-	private static byte[] EMPTY_ARRAY = new byte[0];
-
 	private ModelConversion() {}
 
-	public static RCompound asCompound(LocalDateTime date) {
+	public static RCompound fromDate(LocalDateTime date) {
 		RCompound compound = new RCompound();
 		compound.set("year", new RShort((short) date.getYear()));
 		compound.set("month", new RByte((byte) date.getMonthValue()));
@@ -29,7 +32,7 @@ public final class ModelConversion {
 		return compound;
 	}
 
-	public static LocalDateTime fromCompound(RCompound compound) {
+	public static LocalDateTime toDate(RCompound compound) {
 		int year = (short) compound.get("year").getValue();
 		int month = (byte) compound.get("month").getValue();
 		int day = (byte) compound.get("day").getValue();
@@ -38,28 +41,37 @@ public final class ModelConversion {
 		int second = (byte) compound.get("second").getValue();
 		return LocalDateTime.of(year, month, day, hour, minute, second);
 	}
-
-	public static byte[] toByteArray(BufferedImage image) {
-		if(image == null) {
-			return EMPTY_ARRAY;
+	
+	public static RList<RCompound> fromBricks(ArrayList<Brick> list) {
+		RList<RCompound> output = new RList<>(RType.COMPOUND);
+		for(Brick brick : list) {
+			output.add(brick.asCompound());
 		}
-		try (ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
-			ImageIO.write(image, "jpeg", stream);
-			return stream.toByteArray();
-		} catch (IOException exp) {
-			return EMPTY_ARRAY;
-		}
+		return output;
 	}
-
-	public static BufferedImage fromByteArray(byte[] bytes) {
-		if(bytes.length == 0) {
-			return null;
+	
+	public static ArrayList<Brick> toBricks(RList<RCompound> input) {
+		ArrayList<Brick> list = new ArrayList<>();
+		for(RCompound compound : input) {
+			list.add(new Brick(compound));
 		}
-		try (ByteArrayInputStream stream = new ByteArrayInputStream(bytes)) {
-			return ImageIO.read(stream);
-		} catch (IOException exp) {
-			return null;
+		return list;
+	}
+	
+	public static RList<RCompound> fromScriptCommands(ArrayList<ScriptCommand> list) {
+		RList<RCompound> output = new RList<>(RType.COMPOUND);
+		for(ScriptCommand command : list) {
+			output.add(command.asCompound());
 		}
+		return output;
+	}
+	
+	public static ArrayList<ScriptCommand> toScriptCommands(RList<RCompound> input) {
+		ArrayList<ScriptCommand> list = new ArrayList<>();
+		for(RCompound compound : input) {
+			list.add(new Brick(compound));
+		}
+		return list;
 	}
 
 }

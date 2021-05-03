@@ -62,7 +62,11 @@ public class GeometryHandler implements Serializer<Geometry>, Deserializer<Geome
 		short rotation = buffer.readUnsignedByte();
 		Script script = null;
 		if(BrickModifier.isFunctional(template)) {
-			
+			String alias = Buffer.readString(buffer);
+			boolean enableAwake = buffer.readBoolean();
+			boolean visibleAwake = buffer.readBoolean();
+			String command = Buffer.readString(buffer);
+			script = new Script(alias, enableAwake, visibleAwake, command);
 		}
 		return new Brick(id, code, template, new Transform(posX, posY, posZ, rotation), script);
 	}
