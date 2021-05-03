@@ -21,7 +21,11 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 public class PreviewHandler implements Serializer<Preview>, Deserializer<Preview> {
-
+	
+	public static final PreviewHandler PREVIEW = new PreviewHandler();
+	
+	private PreviewHandler() {}
+	
 	@Override
 	public Preview fromStream(InputStream stream) throws IOException {
 		return fromBytes(Streams.toByteArray(stream));
@@ -29,25 +33,28 @@ public class PreviewHandler implements Serializer<Preview>, Deserializer<Preview
 
 	@Override
 	public Preview fromBytes(byte[] bytes) throws IOException {
-		ByteBuf buffer = Unpooled.wrappedBuffer(bytes);
-		short slot = buffer.readUnsignedByte();
-		String alias = Buffer.readString(buffer);
-		int bricks = buffer.readInt();
+		return fromBuffer(Unpooled.wrappedBuffer(bytes));
+	}
+	
+	public Preview fromBuffer(ByteBuf buf) throws IOException {
+		short slot = buf.readUnsignedByte();
+		String alias = Buffer.readString(buf);
+		int bricks = buf.readInt();
 
-		int year = buffer.readShort();
-		int month = buffer.readByte();
-		int day = buffer.readByte();
-		int hour = buffer.readByte();
-		int minute = buffer.readByte();
-		int second = buffer.readByte();
+		int year = buf.readShort();
+		int month = buf.readByte();
+		int day = buf.readByte();
+		int hour = buf.readByte();
+		int minute = buf.readByte();
+		int second = buf.readByte();
 		LocalDateTime date = LocalDateTime.of(year, month, day, hour, minute, second);
 
-		int length = buffer.readInt();
+		int length = buf.readInt();
 		BufferedImage image = null;
 		if (length > 0) {
 			byte[] imageData = new byte[length];
 			for (int index = 0; index < length; index++) {
-				imageData[index] = buffer.readByte();
+				imageData[index] = buf.readByte();
 			}
 			try (ByteArrayInputStream stream = new ByteArrayInputStream(imageData)) {
 				image = ImageIO.read(stream);
@@ -66,6 +73,18 @@ public class PreviewHandler implements Serializer<Preview>, Deserializer<Preview
 	@Override
 	public byte[] toBytes(Preview preview) throws IOException {
 		ByteBuf buf = Unpooled.buffer();
+		toBuffer(preview, buf);
+		return buf.array();
+	}
+
+	@Override
+	public byte[] toBytes(Preview preview, int capacity) throws IOException {
+		ByteBuf buf = Unpooled.buffer(capacity);
+		toBuffer(preview, buf);
+		return buf.array();
+	}
+	
+	public void toBuffer(Preview preview, ByteBuf buf) throws IOException {
 		buf.writeByte(preview.getSlot());
 		Buffer.writeString(buf, preview.getAlias());
 		buf.writeInt(preview.getBricks());
@@ -78,7 +97,7 @@ public class PreviewHandler implements Serializer<Preview>, Deserializer<Preview
 		buf.writeByte(date.getSecond());
 		if (preview.getImage() == null) {
 			buf.writeInt(0);
-			return buf.array();
+			return;
 		}
 		byte[] image;
 		try (ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
@@ -87,34 +106,6 @@ public class PreviewHandler implements Serializer<Preview>, Deserializer<Preview
 		}
 		buf.writeInt(image.length);
 		buf.writeBytes(image);
-		return buf.array();
-	}
-
-	@Override
-	public byte[] toBytes(Preview preview, int capacity) throws IOException {
-		ByteBuf buf = Unpooled.buffer(capacity);
-		buf.writeByte(preview.getSlot());
-		Buffer.writeString(buf, preview.getAlias());
-		buf.writeInt(preview.getBricks());
-		LocalDateTime date = preview.getDate();
-		buf.writeByte(date.getYear());
-		buf.writeByte(date.getMonthValue());
-		buf.writeByte(date.getDayOfMonth());
-		buf.writeByte(date.getHour());
-		buf.writeByte(date.getMinute());
-		buf.writeByte(date.getSecond());
-		if (preview.getImage() == null) {
-			buf.writeInt(0);
-			return buf.array();
-		}
-		byte[] image;
-		try (ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
-			ImageIO.write(preview.getImage(), "jpeg", stream);
-			image = stream.toByteArray();
-		}
-		buf.writeInt(image.length);
-		buf.writeBytes(image);
-		return buf.array();
 	}
 
 }

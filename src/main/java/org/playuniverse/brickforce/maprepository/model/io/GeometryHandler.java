@@ -20,6 +20,10 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 public class GeometryHandler implements Serializer<Geometry>, Deserializer<Geometry> {
+	
+	public static final GeometryHandler GEOMETRY = new GeometryHandler();
+	
+	private GeometryHandler() {}
 
 	@Override
 	public Geometry fromStream(InputStream stream) throws IOException {
@@ -28,7 +32,10 @@ public class GeometryHandler implements Serializer<Geometry>, Deserializer<Geome
 
 	@Override
 	public Geometry fromBytes(byte[] bytes) throws IOException {
-		ByteBuf buf = Unpooled.wrappedBuffer(bytes);
+		return fromBuffer(Unpooled.wrappedBuffer(bytes));
+	}
+	
+	public Geometry fromBuffer(ByteBuf buf) throws IOException {
 		buf.skipBytes(4); // Ignore version, because it never changed
 		int map = buf.readInt();
 		int skybox = buf.readInt();
@@ -39,7 +46,7 @@ public class GeometryHandler implements Serializer<Geometry>, Deserializer<Geome
 		}
 		return new Geometry(map, skybox, bricks);
 	}
-
+	
 	@Override
 	public void toStream(Geometry geometry, OutputStream stream) throws IOException {
 		stream.write(toBytes(geometry));
@@ -48,25 +55,24 @@ public class GeometryHandler implements Serializer<Geometry>, Deserializer<Geome
 	@Override
 	public byte[] toBytes(Geometry geometry) throws IOException {
 		ByteBuf buf = Unpooled.buffer();
-		buf.writeInt(1); // Write version, even tho it never changed
-		buf.writeInt(geometry.getMap());
-		buf.writeInt(geometry.getSkybox());
-		for(Brick brick : geometry.getBricks()) {
-			writeBrick(buf, brick);
-		}
+		toBuffer(geometry, buf);
 		return buf.array();
 	}
 
 	@Override
 	public byte[] toBytes(Geometry geometry, int capacity) throws IOException {
 		ByteBuf buf = Unpooled.buffer(capacity);
+		toBuffer(geometry, buf);
+		return buf.array();
+	}
+	
+	public void toBuffer(Geometry geometry, ByteBuf buf) {
 		buf.writeInt(1); // Write version, even tho it never changed
 		buf.writeInt(geometry.getMap());
 		buf.writeInt(geometry.getSkybox());
 		for(Brick brick : geometry.getBricks()) {
 			writeBrick(buf, brick);
 		}
-		return buf.array();
 	}
 	
 	public Brick readBrick(ByteBuf buffer) {
