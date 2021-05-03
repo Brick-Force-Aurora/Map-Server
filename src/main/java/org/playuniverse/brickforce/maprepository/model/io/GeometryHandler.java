@@ -102,7 +102,7 @@ public class GeometryHandler implements Serializer<Geometry>, Deserializer<Geome
 			Buffer.writeString(buffer, script.getAlias());
 			buffer.writeBoolean(script.isEnableOnAwake());
 			buffer.writeBoolean(script.isVisibleOnAwake());
-			Buffer.writeString(buffer, script.asCommandString());
+			Buffer.writeString(buffer, script.getCommandsAsString());
 		}
 	}
 
