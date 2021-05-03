@@ -1,10 +1,28 @@
 package org.playuniverse.brickforce.maprepository.model.script;
 
-public class SleepScript extends ScriptCommand {
+import org.playuniverse.brickforce.maprepository.shaded.redis.model.RFloat;
+import org.playuniverse.brickforce.maprepository.shaded.redis.model.RType;
 
-	@Override
-	public final ScriptType getType() {
-		return ScriptType.SLEEP;
+public class SleepScript extends ScriptCommand<RFloat> {
+
+	private float time;
+	
+	public SleepScript() {
+		super(ScriptType.SLEEP, RType.FLOAT);
 	}
-
+	
+	public float getTime() {
+		return time;
+	}
+	
+	@Override
+	protected void loadDataFromModel(RFloat model) {
+		this.time = model.getValue();
+	}
+	
+	@Override
+	protected RFloat dataAsModel() {
+		return new RFloat(time);
+	}
+	
 }

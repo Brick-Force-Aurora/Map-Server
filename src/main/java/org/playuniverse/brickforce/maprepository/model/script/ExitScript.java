@@ -1,10 +1,9 @@
 package org.playuniverse.brickforce.maprepository.model.script;
 
-public class ExitScript extends ScriptCommand {
+public class ExitScript extends VoidScriptCommand {
 
-	@Override
-	public final ScriptType getType() {
-		return ScriptType.EXIT;
+	public ExitScript() {
+		super(ScriptType.EXIT);
 	}
 
 }

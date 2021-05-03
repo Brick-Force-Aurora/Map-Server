@@ -3,6 +3,7 @@ package org.playuniverse.brickforce.maprepository.model;
 import java.util.ArrayList;
 
 import org.playuniverse.brickforce.maprepository.model.script.ScriptCommand;
+import org.playuniverse.brickforce.maprepository.model.util.ModelHandler;
 import org.playuniverse.brickforce.maprepository.shaded.redis.model.RCompound;
 
 public class Script {
@@ -16,7 +17,7 @@ public class Script {
 		this.alias = (String) compound.get("alias").getValue();
 		this.enableAwake = (boolean) compound.get("enable").getValue();
 		this.visibleAwake = (boolean) compound.get("visible").getValue();
-		this.commands = null;
+		this.commands = ModelHandler.toScriptCommands();
 	}
 	
 	public Script(String alias, boolean enableAwake, boolean visibleAwake, String compactCommands) {

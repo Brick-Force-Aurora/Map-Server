@@ -1,10 +1,9 @@
 package org.playuniverse.brickforce.maprepository.model.script;
 
-public class TakeAwayAllScript extends ScriptCommand {
+public class TakeAwayAllScript extends VoidScriptCommand {
 
-	@Override
-	public final ScriptType getType() {
-		return ScriptType.TAKE_AWAY_ALL;
+	public TakeAwayAllScript() {
+		super(ScriptType.TAKE_AWAY_ALL);
 	}
 
 }
