@@ -39,7 +39,7 @@ public final class Main {
 		int port = arguments.get("port", ArgumentSuperType.NUMBER).map(base -> base.asNumeric().asNumber()).orElse(80).intValue();
 		InetAddress address = arguments.get("host", ArgumentType.STRING).map(base -> base.asString().getValue()).map(Main::parseAddress).orElse(null);
 		FileStorage storage = arguments.get("storage", ArgumentType.STRING).map(base -> base.asString().getValue())
-			.map(value -> searchStorage(arguments, console, value.toLowerCase())).orElseGet(FileFileStorage::new);
+			.map(value -> searchStorage(arguments, console, value.toLowerCase())).orElseGet(() -> new FileFileStorage(console));
 
 		container.replace(new RestServer(arguments, console, storage, port, address));
 		// START : Setup Commands
@@ -47,7 +47,7 @@ public final class Main {
 		// END : Setup Commands
 		container.get().start();
 	}
-	
+
 	/*
 	 * Argument parsing
 	 */

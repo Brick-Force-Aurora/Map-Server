@@ -4,21 +4,16 @@ import org.playuniverse.brickforce.maprepository.model.BrickMap;
 import org.playuniverse.brickforce.maprepository.model.Geometry;
 import org.playuniverse.brickforce.maprepository.model.Preview;
 import org.playuniverse.brickforce.maprepository.storage.FileStorage;
+import org.playuniverse.brickforce.maprepository.storage.StoreState;
 
 public class RedisFileStorage extends FileStorage {
 	
 	// TODO: Implement Redis Storage
 
 	@Override
-	public void store(BrickMap map) {
+	public StoreState store(BrickMap map) {
 		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void update(long id, Geometry geometry) {
-		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override

@@ -6,9 +6,7 @@ import org.playuniverse.brickforce.maprepository.model.Preview;
 
 public abstract class FileStorage {
 	
-	public abstract void store(BrickMap map);
-	
-	public abstract void update(long id, Geometry geometry);
+	public abstract StoreState store(BrickMap map);
 	
 	public abstract boolean hasMap(long id);
 	
