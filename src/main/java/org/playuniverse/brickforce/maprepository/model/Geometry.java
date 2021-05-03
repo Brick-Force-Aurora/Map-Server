@@ -26,6 +26,18 @@ public final class Geometry {
 		this.skybox = skybox;
 		this.bricks = bricks;
 	}
+	
+	public int getMap() {
+		return map;
+	}
+	
+	public int getSkybox() {
+		return skybox;
+	}
+	
+	public ArrayList<Brick> getBricks() {
+		return bricks;
+	}
 
 	public RCompound asCompound() {
 		RCompound compound = new RCompound();

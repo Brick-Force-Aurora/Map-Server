@@ -1,13 +1,7 @@
 package org.playuniverse.brickforce.maprepository.model.util;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-
-import javax.imageio.ImageIO;
 
 import org.playuniverse.brickforce.maprepository.model.Brick;
 import org.playuniverse.brickforce.maprepository.model.script.ScriptCommand;
@@ -58,18 +52,18 @@ public final class ModelConversion {
 		return list;
 	}
 	
-	public static RList<RCompound> fromScriptCommands(ArrayList<ScriptCommand> list) {
+	public static RList<RCompound> fromScriptCommands(ArrayList<ScriptCommand<?>> list) {
 		RList<RCompound> output = new RList<>(RType.COMPOUND);
-		for(ScriptCommand command : list) {
+		for(ScriptCommand<?> command : list) {
 			output.add(command.asCompound());
 		}
 		return output;
 	}
 	
-	public static ArrayList<ScriptCommand> toScriptCommands(RList<RCompound> input) {
-		ArrayList<ScriptCommand> list = new ArrayList<>();
+	public static ArrayList<ScriptCommand<?>> toScriptCommands(RList<RCompound> input) {
+		ArrayList<ScriptCommand<?>> list = new ArrayList<>();
 		for(RCompound compound : input) {
-			list.add(new Brick(compound));
+			list.add(ScriptCommand.fromCompound(compound));
 		}
 		return list;
 	}

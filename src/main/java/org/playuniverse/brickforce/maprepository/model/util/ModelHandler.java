@@ -39,12 +39,12 @@ public final class ModelHandler {
 		}
 	}
 	
-	public static ArrayList<ScriptCommand> toScriptCommands(String compactCommands) {
-		
+	public static ArrayList<ScriptCommand<?>> toScriptCommands(String compactCommands) {
+		return null;
 	}
 	
-	public static String fromScriptCommands(ArrayList<ScriptCommand> commands) {
-		
+	public static String fromScriptCommands(ArrayList<ScriptCommand<?>> commands) {
+		return null;
 	}
 
 }
