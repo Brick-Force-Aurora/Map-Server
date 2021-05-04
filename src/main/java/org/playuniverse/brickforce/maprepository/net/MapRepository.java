@@ -23,7 +23,7 @@ public class MapRepository {
 		this.storage = storage;
 		this.server = address == null ? new CustomRestApiServer(port) : new CustomRestApiServer(port, address);
 		server.addTypes(RequestType.POST, RequestType.GET);
-		server.setHandler(new RestApiHandler());
+		server.setHandler(new RestApiHandler(this));
 	}
 
 	public ArgumentMap getArguments() {
