@@ -21,6 +21,7 @@ import org.playuniverse.brickforce.maprepository.shaded.redis.model.io.RNamedMod
 import org.playuniverse.brickforce.maprepository.storage.FileStorage;
 import org.playuniverse.brickforce.maprepository.storage.StoreState;
 import org.playuniverse.brickforce.maprepository.storage.utils.CacheMap;
+import org.playuniverse.brickforce.maprepository.storage.utils.Ref;
 import org.playuniverse.console.Console;
 
 import com.syntaxphoenix.syntaxapi.command.ArgumentMap;
@@ -88,7 +89,7 @@ public class FileFileStorage extends FileStorage {
 	}
 
 	@Override
-	public BrickMap getMap(long id) {
+	public BrickMap getMap(long id, Ref<String> ref) {
 		FiledMap map = cache.get(id);
 		if (map != null) {
 			return map.getMap();
@@ -101,26 +102,31 @@ public class FileFileStorage extends FileStorage {
 		try (InputStream stream = new GZIPInputStream(new FileInputStream(file))) {
 			data = Streams.toByteArray(stream);
 		} catch (IOException exp) {
-			console.log(LogTypeId.ERROR, "Failed to load map '" + id + "' from file!");
+			ref.set("Failed to load map '" + id + "' from file!");
+			console.log(LogTypeId.ERROR, ref.get());
 			console.log(exp);
+			file.delete();
 			return null; // Unable to load map
 		}
 		RNamedModel namedModel;
 		try {
 			namedModel = RIOModel.MODEL.read(data);
 		} catch (IndexOutOfBoundsException exp) {
-			console.log(LogTypeId.ERROR, "Failed to load map '" + id + "' from RedisIO model!");
+			ref.set("Failed to load map '" + id + "' from RedisIO model!");
+			console.log(LogTypeId.ERROR, ref.get());
 			console.log(exp);
 			namedModel = null;
 		}
 		if (namedModel == null) {
-			console.log(LogTypeId.WARNING, "Deleting map '" + id + "' because its corrupted!");
+			ref.set("Deleting map '" + id + "' because its corrupted!");
+			console.log(LogTypeId.WARNING, ref.get());
 			file.delete();
 			return null;
 		}
 		RModel model = namedModel.getModel();
 		if (model == null || model.getType() != RType.COMPOUND) {
-			console.log(LogTypeId.WARNING, "Deleting map '" + id + "' because its invalid!");
+			ref.set("Deleting map '" + id + "' because its invalid!");
+			console.log(LogTypeId.WARNING, ref.get());
 			file.delete();
 			return null;
 		}
