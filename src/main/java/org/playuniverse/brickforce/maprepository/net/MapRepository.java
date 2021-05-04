@@ -24,6 +24,7 @@ public class MapRepository {
 		this.server = address == null ? new CustomRestApiServer(port) : new CustomRestApiServer(port, address);
 		server.addTypes(RequestType.POST, RequestType.GET);
 		server.setHandler(new RestApiHandler(this));
+		server.setValidator(new RestApiValidator());
 	}
 
 	public ArgumentMap getArguments() {
