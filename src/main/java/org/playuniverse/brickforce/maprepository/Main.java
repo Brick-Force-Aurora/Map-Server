@@ -43,7 +43,7 @@ public final class Main {
 
 		container.replace(new MapRepository(arguments, console, storage, port, address));
 		// START : Setup Commands
-		console.getCommandManager().register(null, STORAGE_PATH, args);
+		console.getCommandManager().register(new ShutdownCommand(console), "exit", "stop", "shutdown");
 		// END : Setup Commands
 		container.get().start();
 	}
