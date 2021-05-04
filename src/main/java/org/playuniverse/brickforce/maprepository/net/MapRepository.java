@@ -7,28 +7,30 @@ import org.playuniverse.console.Console;
 
 import com.syntaxphoenix.syntaxapi.command.ArgumentMap;
 import com.syntaxphoenix.syntaxapi.logging.LogTypeId;
-import com.syntaxphoenix.syntaxapi.net.http.RestApiServer;
+import com.syntaxphoenix.syntaxapi.net.http.RequestType;
 
-public class RestServer {
+public class MapRepository {
 
-	private final RestApiServer server;
+	private final CustomRestApiServer server;
 	private final FileStorage storage;
 	private final Console console;
 
 	private final ArgumentMap arguments;
 
-	public RestServer(ArgumentMap arguments, Console console, FileStorage storage, int port, InetAddress address) {
+	public MapRepository(ArgumentMap arguments, Console console, FileStorage storage, int port, InetAddress address) {
 		this.arguments = arguments;
 		this.console = console;
 		this.storage = storage;
-		this.server = address == null ? new RestApiServer(port) : new RestApiServer(port, address);
+		this.server = address == null ? new CustomRestApiServer(port) : new CustomRestApiServer(port, address);
+		server.addTypes(RequestType.POST, RequestType.GET);
+		server.setHandler(new RestApiHandler());
 	}
 
 	public ArgumentMap getArguments() {
 		return arguments;
 	}
 
-	public RestApiServer getServer() {
+	public CustomRestApiServer getServer() {
 		return server;
 	}
 

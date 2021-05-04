@@ -6,7 +6,7 @@ import java.lang.reflect.Parameter;
 import java.net.InetAddress;
 import java.util.Optional;
 
-import org.playuniverse.brickforce.maprepository.net.RestServer;
+import org.playuniverse.brickforce.maprepository.net.MapRepository;
 import org.playuniverse.brickforce.maprepository.storage.FileStorage;
 import org.playuniverse.brickforce.maprepository.storage.file.FileFileStorage;
 import org.playuniverse.console.Console;
@@ -26,7 +26,7 @@ public final class Main {
 
 	private Main() {}
 
-	private static Container<RestServer> container = Container.of();
+	private static Container<MapRepository> container = Container.of();
 
 	public static void main(String[] args) {
 		ArgumentMap arguments = JVMArgumentHelper.DEFAULT.serialize(args);
@@ -41,7 +41,7 @@ public final class Main {
 		FileStorage storage = arguments.get("storage", ArgumentType.STRING).map(base -> base.asString().getValue())
 			.map(value -> searchStorage(arguments, console, value.toLowerCase())).orElseGet(() -> new FileFileStorage(console));
 
-		container.replace(new RestServer(arguments, console, storage, port, address));
+		container.replace(new MapRepository(arguments, console, storage, port, address));
 		// START : Setup Commands
 		console.getCommandManager().register(null, STORAGE_PATH, args);
 		// END : Setup Commands
