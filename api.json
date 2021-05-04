@@ -1,0 +1,129 @@
+{
+  "map": {
+    "get": {
+      "type": "GET",
+      "query": [
+        {
+          "name": "id",
+          "type": "64-int",
+          "required": true
+        }
+      ],
+      "response": {
+        "200": {
+          "content-type": "application/octet-stream",
+          "content": {
+            "_file": "Map file"
+          }
+        },
+        "400": [
+          {
+            "content-type": "application/json",
+            "content": {
+              "error": "Invalid id"
+            }
+          },
+          {
+            "content-type": "application/json",
+            "content": {
+              "error": "An id may only be positive, 0 or -1"
+            }
+          },
+          {
+            "content-type": "application/json",
+            "content": {
+              "error": "A map can only have an id higher or equal to zero"
+            }
+          }
+        ],
+        "404": {},
+        "410": {
+          "content-type": "application/json",
+          "content": {
+            "reason": "<Reason>"
+          }
+        }
+      }
+    },
+    "has": {
+      "type": "GET",
+      "query": [
+        {
+          "name": "id",
+          "type": "64-int",
+          "required": true
+        }
+      ],
+      "response": {
+        "200": {},
+        "400": [
+          {
+            "content-type": "application/json",
+            "content": {
+              "error": "Invalid id"
+            }
+          },
+          {
+            "content-type": "application/json",
+            "content": {
+              "error": "An id may only be positive, 0 or -1"
+            }
+          },
+          {
+            "content-type": "application/json",
+            "content": {
+              "error": "A map can only have an id higher or equal to zero"
+            }
+          }
+        ],
+        "404": {}
+      }
+    },
+    "upload": {
+      "type": "POST",
+      "content-type": "application/octet-stream",
+      "query": [
+        {
+          "name": "id",
+          "type": "64-int",
+          "required": false
+        }
+      ],
+      "response": {
+        "200": {
+          "content-type": "application/json",
+          "content": {
+            "state": "CREATED / UPDATED",
+            "id": 0
+          }
+        },
+        "400": [
+          {
+            "content-type": "application/json",
+            "content": {
+              "error": "Invalid id"
+            }
+          },
+          {
+            "content-type": "application/json",
+            "content": {
+              "error": "An id may only be positive, 0 or -1"
+            }
+          }
+        ],
+        "406": {
+          "content-type": "application/json",
+          "content": {
+            "error": "Invalid content"
+          }
+        },
+        "500": {
+          "content-type": "application/json",
+          "content": {
+            "error": "Unable to save map to storage"
+          }
+        }
+      }
+    }
+  }
+}
