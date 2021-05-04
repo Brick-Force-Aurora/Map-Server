@@ -1,10 +1,14 @@
 package org.playuniverse.brickforce.maprepository.net;
 
-import org.playuniverse.brickforce.maprepository.model.BrickMap;
-import org.playuniverse.brickforce.maprepository.storage.FileStorage;
-import org.playuniverse.brickforce.maprepository.storage.utils.Ref;
-import org.playuniverse.console.Console;
+import java.io.IOException;
 
+import org.playuniverse.brickforce.maprepository.model.BrickMap;
+import org.playuniverse.brickforce.maprepository.model.io.BrickMapHandler;
+import org.playuniverse.brickforce.maprepository.storage.FileStorage;
+import org.playuniverse.brickforce.maprepository.storage.StoreState;
+import org.playuniverse.brickforce.maprepository.storage.utils.Ref;
+
+import com.syntaxphoenix.syntaxapi.json.value.JsonLong;
 import com.syntaxphoenix.syntaxapi.net.http.HttpSender;
 import com.syntaxphoenix.syntaxapi.net.http.HttpWriter;
 import com.syntaxphoenix.syntaxapi.net.http.JsonAnswer;
@@ -18,15 +22,10 @@ import com.syntaxphoenix.syntaxapi.net.http.StandardNamedType;
 
 public class RestApiHandler implements RequestHandler {
 
-	private final MapRepository repository;
-
 	private final FileStorage storage;
-	private final Console console;
 
 	public RestApiHandler(MapRepository repository) {
-		this.repository = repository;
 		this.storage = repository.getStorage();
-		this.console = repository.getConsole();
 	}
 
 	@Override
@@ -41,11 +40,11 @@ public class RestApiHandler implements RequestHandler {
 			return true;
 		}
 		if (id == -8) {
-			new JsonAnswer(StandardContentType.JSON).code(ResponseCode.BAD_REQUEST).respond("error", "An id can only be positive, 0 or -1").write(writer);
+			new JsonAnswer(StandardContentType.JSON).code(ResponseCode.BAD_REQUEST).respond("error", "An id may only be positive, 0 or -1").write(writer);
 			return true;
 		}
 		if (request.getType() == RequestType.POST) {
-			handlePost(sender, writer, request, id);
+			handleUpload(sender, writer, request, id);
 			return true;
 		}
 		handleGet(sender, writer, request, id);
@@ -56,7 +55,7 @@ public class RestApiHandler implements RequestHandler {
 		if (path.length < 2 && !path[0].equalsIgnoreCase("map")) {
 			return -10;
 		}
-		if (path[1].equalsIgnoreCase("get")) {
+		if (path[1].equalsIgnoreCase("get") || path[1].equalsIgnoreCase("has")) {
 			if (path.length < 3) {
 				return -9;
 			}
@@ -91,16 +90,39 @@ public class RestApiHandler implements RequestHandler {
 			new NamedAnswer(StandardNamedType.PLAIN).code(ResponseCode.NOT_FOUND).write(writer);
 			return;
 		}
+		if (request.getPath()[1].equalsIgnoreCase("has")) {
+			new NamedAnswer(StandardNamedType.PLAIN).code(ResponseCode.OK).write(writer);
+			return;
+		}
 		Ref<String> error = new Ref<>();
 		BrickMap map = storage.getMap(id, error);
 		if (error.has()) {
 			new JsonAnswer(StandardContentType.JSON).code(ResponseCode.GONE).respond("error", error.get()).write(writer);
 			return;
 		}
+		new MapAnswer().setResponse(map).code(ResponseCode.OK).write(writer);
 	}
 
-	private void handlePost(HttpSender sender, HttpWriter writer, ReceivedRequest request, long id) throws Exception {
-
+	private void handleUpload(HttpSender sender, HttpWriter writer, ReceivedRequest request, long id) throws Exception {
+		id = (id == -1) ? storage.generateId() : id;
+		byte[] bytes = (byte[]) request.getData().getValue();
+		BrickMap map;
+		try {
+			map = BrickMapHandler.BRICK_MAP.fromBytes(bytes);
+		} catch (IOException exp) {
+			new JsonAnswer(StandardContentType.JSON).code(ResponseCode.NOT_ACCEPTABLE).respond("error", "Invalid content").write(writer);
+			return;
+		}
+		if (map == null) {
+			new JsonAnswer(StandardContentType.JSON).code(ResponseCode.NOT_ACCEPTABLE).respond("error", "Invalid content").write(writer);
+			return;
+		}
+		StoreState state = storage.store(map.copyWithId(id));
+		if (state == StoreState.FAILED) {
+			new JsonAnswer(StandardContentType.JSON).code(ResponseCode.INTERNAL_SERVER_ERROR).respond("error", "Unable to save map to storage").write(writer);
+			return;
+		}
+		new JsonAnswer(StandardContentType.JSON).code(ResponseCode.OK).respond("state", state.name()).respond("id", new JsonLong(id)).write(writer);
 	}
 
 }

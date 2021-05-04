@@ -41,5 +41,9 @@ public final class BrickMap {
 		compound.set("geometry", geometry.asCompound());
 		return compound;
 	}
+	
+	public BrickMap copyWithId(long id) {
+		return new BrickMap(id, preview, geometry);
+	}
 
 }
