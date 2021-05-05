@@ -1,7 +1,10 @@
-package org.playuniverse.brickforce.maprepository.net;
+package org.playuniverse.brickforce.maprepository;
 
 import java.net.InetAddress;
 
+import org.playuniverse.brickforce.maprepository.net.CustomRestApiServer;
+import org.playuniverse.brickforce.maprepository.net.RestApiHandler;
+import org.playuniverse.brickforce.maprepository.net.RestApiValidator;
 import org.playuniverse.brickforce.maprepository.storage.FileStorage;
 import org.playuniverse.console.Console;
 
@@ -25,6 +28,7 @@ public class MapRepository {
 		server.addTypes(RequestType.POST, RequestType.GET);
 		server.setHandler(new RestApiHandler(this));
 		server.setValidator(new RestApiValidator());
+		Runtime.getRuntime().addShutdownHook(new Thread(this::stop));
 	}
 
 	public ArgumentMap getArguments() {

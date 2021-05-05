@@ -2,6 +2,7 @@ package org.playuniverse.brickforce.maprepository.net;
 
 import java.io.IOException;
 
+import org.playuniverse.brickforce.maprepository.MapRepository;
 import org.playuniverse.brickforce.maprepository.model.BrickMap;
 import org.playuniverse.brickforce.maprepository.model.io.BrickMapHandler;
 import org.playuniverse.brickforce.maprepository.storage.FileStorage;

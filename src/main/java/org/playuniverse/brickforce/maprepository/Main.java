@@ -7,7 +7,6 @@ import java.net.InetAddress;
 import java.util.Optional;
 
 import org.playuniverse.brickforce.maprepository.commands.ShutdownCommand;
-import org.playuniverse.brickforce.maprepository.net.MapRepository;
 import org.playuniverse.brickforce.maprepository.storage.FileStorage;
 import org.playuniverse.brickforce.maprepository.storage.file.FileFileStorage;
 import org.playuniverse.console.Console;
