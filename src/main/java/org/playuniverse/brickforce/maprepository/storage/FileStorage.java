@@ -12,6 +12,8 @@ public abstract class FileStorage {
 
 	private static final Ref<String> IGNORE = new Ref<>();
 	private static final RandomNumberGenerator RANDOM = NumberGeneratorType.MURMUR.create(System.currentTimeMillis());
+    
+    public abstract IStorageIndex getIndex();
 
 	public abstract StoreState store(BrickMap map);
 

@@ -23,6 +23,7 @@ public class MapAnswer extends Answer<BrickMap> {
 
 	public MapAnswer setResponse(BrickMap map) {
 		this.map = map;
+		header("Mode-Mask", map.getModeMask());
 		return this;
 	}
 

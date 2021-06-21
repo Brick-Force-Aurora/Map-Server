@@ -7,11 +7,11 @@
 	<groupId>org.playuniverse.brickforce</groupId>
 	<artifactId>maprepository</artifactId>
 	<version>1.0</version>
-	
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>com.syntaxphoenix.syntaxapi</groupId>
@@ -48,20 +48,35 @@
 			<artifactId>event</artifactId>
 			<version>2.0.8</version>
 		</dependency>
-	
+
+		<!-- Networking -->
+
 		<dependency>
 			<groupId>io.netty</groupId>
 			<artifactId>netty-buffer</artifactId>
 			<version>4.1.63.Final</version>
+		</dependency>
+
+		<!-- Database -->
+		
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>4.0.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.xerial</groupId>
+			<artifactId>sqlite-jdbc</artifactId>
+			<version>3.34.0</version>
 		</dependency>
 		<dependency>
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
 			<version>3.6.0</version>
 		</dependency>
-		
+
 		<!-- Test -->
-		
+
 		<dependency>
 			<groupId>org.pf4j</groupId>
 			<artifactId>pf4j</artifactId>
@@ -86,7 +101,7 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<resources>
 			<resource>
