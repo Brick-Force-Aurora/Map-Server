@@ -50,6 +50,7 @@ public final class BrickMap {
 	public RCompound asCompound() {
 		RCompound compound = new RCompound();
 		compound.set("id", new RLong(id));
+		compound.set("release", new RInt(0)); // TODO: Add version to request
 		compound.set("modeMask", new RInt(modeMask));
 		compound.set("preview", preview.asCompound());
 		compound.set("geometry", geometry.asCompound());
